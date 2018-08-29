@@ -7,6 +7,7 @@
 ################################################################################
 
 import matplotlib.pyplot as plt
+import numpy as np
 
 ################################################################################
 #                                                                              #
@@ -31,7 +32,7 @@ temp_kelvin = [288.15, 286.15, 284.15, 282.25, 280.25, 278.25, 276.25, 274.25, 2
                238.65, 228.75, 218.85, 216.65, 216.65, 216.65, 216.65, 216.65, 216.65, 216.65, 216.65, 216.65, 219.35,
                223.96, 228.55, 233.05]
 
-# Armospheric pressure, measured in bars from sea level to 100000 ft
+# Atmospheric pressure, measured in bars from sea level to 100000 ft
 pressure = [101325, 97773, 94322, 90971, 87718, 84560, 81494, 78520, 75634, 72835, 70121, 57752, 46575, 37757, 30346,
             24163, 18799, 14854, 11737, 9132, 7218, 5705, 4440, 3566, 2776, 2163, 1746, 1374, 1086]
 
@@ -50,8 +51,8 @@ temp_ratio = [x / temp_sea_level for x in temp_kelvin]
 atmospheric_gases = ['Nitrogen', 'Oxygen', 'Water', 'Argon', 'Carbon Dioxide', 'Neon', 'Helium', 'Methane', 'Krypton',
                      'Hydrogen', 'Nitrous Oxide', 'Xenon', 'Ozone', 'Particles', 'Iodine', 'Nitrogen Dioxide',
                      'Chlorofluorocarbons']
-atmospheric_percent_volume = [78.08, 20.95, 4, 0.93, 0.036, 0.0018, 0.0005, 0.00017, 0.00014, 0.00005, 0.00003, 0.000009,
-                              0.000004, 0.000001, 0.000002, 0.00000002]
+atmospheric_gases_percentages = [78.08, 20.95, 4.0, 0.93, 0.036, 0.0018, 0.0005, 0.00017, 0.00014, 0.00005, 0.00003,
+                                 0.000009, 0.000004, 0.000001, 0.000001, 0.000002, 0.00000002]
 
 print("""
 ####################################################################################################
@@ -115,12 +116,23 @@ master_list = [
 atmospheric_layers = ['Exosphere', 'Thermosphere', 'Mesosphere', 'Stratosphere', 'Troposphere']
 cloud_type = ['Cirrocumulus', 'Cirrostratus', 'Cirrus', 'Altostratus', 'Altocumulus', 'Nimbostratus', 'Cumulonimbus',
               'Cumulus', 'Stratus', 'no']
-
+atmospheric_layers_gases = [
+    [atmospheric_gases[9], atmospheric_gases[6], atmospheric_gases[4], atmospheric_gases[1], atmospheric_gases[0]],
+    [atmospheric_gases[1], atmospheric_gases[0], atmospheric_gases[6], atmospheric_gases[9]],
+    [atmospheric_gases[1], atmospheric_gases[0], atmospheric_gases[6], atmospheric_gases[9]],
+    [atmospheric_gases[1], atmospheric_gases[0], atmospheric_gases[6], atmospheric_gases[9], atmospheric_gases[12],
+     atmospheric_gases[16]],
+    [atmospheric_gases[1], atmospheric_gases[0], atmospheric_gases[6], atmospheric_gases[9], atmospheric_gases[2],
+     atmospheric_gases[13], atmospheric_gases[3], atmospheric_gases[4]],
+]
 ionospheric_layer = ['F Layer', 'E Layer', 'D Layer']
 f_layer = [150000, 500000]
 e_layer = [88000, 144000]
 d_layer = [40000, 87000]
 
+precipitation_type = [
+    'None', 'Light Rain', 'Heavy Rain', 'Light Snow', 'Heavy Snow', 'Hail'
+]
 ################################################################################
 #                                                                              #
 #                         Display aerodynamic variables                        #
@@ -385,14 +397,19 @@ elif meter_foot_conversion >= 0:
 # This section will display the atmospheric layer the flying object is located in (based on user input)
 if user_altitude < 190000000 and user_altitude >= 525000:
     print("The object is currently located in the", atmospheric_layers[0])
+    print("Atmospheric gases at this altitude consist of:", atmospheric_layers_gases[0])
 elif user_altitude < 525000 and user_altitude >= 80000:
     print("The object is currently located in the", atmospheric_layers[1])
+    print("Atmospheric gases at this altitude consist of:", atmospheric_layers_gases[1])
 elif user_altitude < 80000 and user_altitude >= 50000:
     print("The object is currently located in the", atmospheric_layers[2])
+    print("Atmospheric gases at this altitude consist of:", atmospheric_layers_gases[2])
 elif user_altitude < 50000 and user_altitude >= 13000:
     print("The object is currently located in the", atmospheric_layers[3])
+    print("Atmospheric gases at this altitude consist of:", atmospheric_layers_gases[3])
 elif user_altitude < 13000 and user_altitude > 0:
     print("The object is currently located in the", atmospheric_layers[4])
+    print("Atmospheric gases at this altitude consist of:", atmospheric_layers_gases[4])
 else:
     print("The object is not located within Earth's atmosphere")
 
@@ -489,5 +506,50 @@ plt.ylabel('Altitude (ft)')
 plt.xlabel('Density')
 plt.grid(True)
 
+
+atmospheric_gases_most = ['N2', 'O2', 'H2O', 'Ar', 'CO2']
+atmospheric_gases_percentages_most = [78.08, 20.95, 4.0, 0.93, 0.036]
+
+y_pos = np.arange(len(atmospheric_gases_most))
+
+plt.figure(4)
+plt.subplot(311)
+plt.title('Atmospheric Gases')
+plt.bar(y_pos, atmospheric_gases_percentages_most, align='center', alpha=0.5)
+plt.xticks(y_pos, atmospheric_gases_most)
+plt.grid(True)
+
+atmospheric_gases_mid = ['Ne', 'He', 'CH4', 'Kr', 'H2', 'N2O']
+atmospheric_gases_percentages_mid = [0.0018, 0.0005, 0.00017, 0.00014, 0.00005, 0.00003]
+
+y_pos = np.arange(len(atmospheric_gases_mid))
+
+plt.subplot(312)
+plt.bar(y_pos, atmospheric_gases_percentages_mid, align='center', alpha=0.5)
+plt.xticks(y_pos, atmospheric_gases_mid)
+plt.ylabel('Percentage by volume')
+plt.grid(True)
+
+atmospheric_gases_least = ['Xe', 'O3', 'Particles', 'I2', 'NO2', 'CFC']
+atmospheric_gases_percentages_least = [0.000009, 0.000004, 0.000001, 0.000001, 0.000002, 0.00000002]
+
+y_pos = np.arange(len(atmospheric_gases_least))
+
+plt.subplot(313)
+plt.bar(y_pos, atmospheric_gases_percentages_least, align='center', alpha=0.5)
+plt.grid(True)
+plt.xticks(y_pos, atmospheric_gases_least)
+
+
+atmospheric_gases_most_abundant = ['N2', 'O2', 'H2O', 'Ar']
+atmospheric_gases_percentages_most_abundant = [78.08, 20.95, 4.0, 0.93]
+
+y_pos = np.arange(len(atmospheric_gases_most_abundant))
+
+plt.figure(5)
+plt.title('Atmospheric Gases')
+plt.bar(y_pos, atmospheric_gases_percentages_most_abundant, align='center', alpha=0.5)
+plt.xticks(y_pos, atmospheric_gases_most_abundant)
+plt.grid(True)
 
 plt.show()
